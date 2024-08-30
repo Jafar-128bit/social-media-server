@@ -15,7 +15,6 @@ exports.authBodyValidator = (body = {}, type = "") => {
             return "Wrong Validator Type Selected";
     }
 };
-
 exports.profileValidator = (data = {}, type = "",) => {
     const {profileId, profileDescription, linkList, privateStatus, email, searchTerm, followingProfileId} = data;
     switch (type) {
@@ -35,5 +34,18 @@ exports.profileValidator = (data = {}, type = "",) => {
             return profileId !== undefined && followingProfileId !== undefined;
         default:
             break;
+    }
+};
+exports.postValidator = (data = {}, type = "") => {
+    const {postId, profileId, content, isRepost, originalPostId, attachments} = data;
+    switch (type) {
+        case "postIdValidator":
+            return postId !== undefined && postId.length !== 0;
+        case "profileIdValidator":
+            return profileId !== undefined && profileId.length !== 0;
+        case "postDataValidator":
+            return content !== undefined && isRepost !== undefined && originalPostId !== undefined && attachments !== undefined;
+        default:
+            throw new Error("Wrong Validator Option");
     }
 }

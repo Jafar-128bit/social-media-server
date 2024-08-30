@@ -2,37 +2,13 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
     const express = require('express');
     const router = express.Router();
 
-    const {
-        getProfileService,
-        updateProfilePictureService,
-        updatedProfileInfoService,
-        updateFollowingService,
-        changePrivateStatusService,
-        updateEmailService
-    } = require('../service/profileService');
-
-    const {
-        getProfileByIdController,
-        getProfileListController,
-        updateProfilePictureController,
-        deleteProfilePictureController,
-        updateProfileDescriptionController,
-        updateProfileLinksController,
-        addFollowingController,
-        removeFollowingController,
-        changePrivateStatusController,
-        updateEmailController
-    } = controllerObject;
-
-    const {uploadFileMiddleware} = middlewareObject;
-
     router.get("/getProfile", async (req, res) => {
         const isValid = validator(req.query, 'idValidator');
         if (isValid) {
             const {profileId} = req.query;
 
             try {
-                const result = await getProfileByIdController({service: getProfileService}, {profileId});
+                const result = await controllerObject.getProfileByIdController({profileId});
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(500).json(err);
@@ -46,7 +22,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
             const {searchTerm} = req.query;
 
             try {
-                const result = await getProfileListController({service: getProfileService}, {searchTerm});
+                const result = await controllerObject.getProfileListController({searchTerm});
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(500).json(err);
@@ -54,16 +30,14 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
 
         } else return res.status(404).json({message: "Profile Id is Empty!", code: "BAD"});
     });
-    router.patch("/editProfilePicture", uploadFileMiddleware.single('file'), async (req, res) => {
+
+    router.patch("/editProfilePicture", middlewareObject.uploadFileMiddleware.single('file'), async (req, res) => {
         const isValid = validator(req.body, "idValidator");
         if (isValid) {
             const {profileId} = req.body;
             const filePath = req.file.path;
             try {
-                const result = await updateProfilePictureController({service: updateProfilePictureService}, {
-                    profileId,
-                    filePath
-                });
+                const result = await controllerObject.updateProfilePictureController({profileId, filePath});
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(500).json(err);
@@ -71,7 +45,6 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
 
         } else return res.status(404).json({message: "Profile Id is Empty!", code: "BAD"});
     });
-
     router.patch('/editProfileDescription', async (req, res) => {
         const isIdValidated = validator(req.body, "idValidator");
         const isDescriptionValidated = validator(req.body, "descriptionValidator");
@@ -79,7 +52,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
         if (isIdValidated && isDescriptionValidated) {
             const {profileId, profileDescription} = req.body;
             try {
-                const result = await updateProfileDescriptionController({service: updatedProfileInfoService}, {
+                const result = await controllerObject.updateProfileDescriptionController({
                     profileId,
                     updatedData: profileDescription
                 });
@@ -97,10 +70,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
         if (isIdValidated && isLinkValidated) {
             const {profileId, linkList} = req.body;
             try {
-                const result = await updateProfileLinksController({service: updatedProfileInfoService}, {
-                    profileId,
-                    updatedData: linkList,
-                });
+                const result = await controllerObject.updateProfileLinksController({profileId, updatedData: linkList,});
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(500).json(err);
@@ -114,10 +84,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
             const {profileId, followingProfileId} = req.query;
 
             try {
-                const result = await addFollowingController({service: updateFollowingService}, {
-                    profileId,
-                    followingProfileId
-                });
+                const result = await controllerObject.addFollowingController({profileId, followingProfileId});
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(500).json(err);
@@ -132,10 +99,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
         if (isIdValidated && isPrivateDataValidated) {
             const {profileId, privateStatus} = req.body;
             try {
-                const result = await changePrivateStatusController({service: changePrivateStatusService}, {
-                    profileId,
-                    privateStatus
-                });
+                const result = await controllerObject.changePrivateStatusController({profileId, privateStatus});
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(500).json(err);
@@ -150,7 +114,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
         if (isIdValidated && isEmailDataValidated) {
             const {profileId, email} = req.body;
             try {
-                const result = await updateEmailController({service: updateEmailService}, {profileId, email});
+                const result = await controllerObject.updateEmailController({profileId, email});
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(500).json(err);
@@ -165,10 +129,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
             const {profileId, followingProfileId} = req.query;
 
             try {
-                const result = await removeFollowingController({service: updateFollowingService}, {
-                    profileId,
-                    followingProfileId
-                });
+                const result = await controllerObject.removeFollowingController({profileId, followingProfileId});
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(500).json(err);
@@ -181,7 +142,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
         if (isValid) {
             const {profileId} = req.body;
             try {
-                const result = await deleteProfilePictureController({service: updateProfilePictureService}, {profileId});
+                const result = await controllerObject.deleteProfilePictureController({profileId});
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(500).json(err);

@@ -1,6 +1,5 @@
 exports.createPostCollection = async (db) => {
     try {
-
         const postSchema = {
             $jsonSchema: {
                 bsonType: "object",
@@ -11,18 +10,17 @@ exports.createPostCollection = async (db) => {
                     content: {bsonType: "string", description: "must be a string and is required"},
                     likeIds: {
                         bsonType: "array",
-                        items: {bsonType: "int"},
+                        items: {bsonType: "string"},
                         description: "must be an array of integers and is required"
                     },
                     isRepost: {bsonType: "bool", description: "must be a boolean and is required"},
-                    originalPostId: {bsonType: "int", description: "must be an integer if isRepost is true"},
+                    originalPostId: {bsonType: ["string", "null"], description: "must be an integer if isRepost is true"},
                     attachments: {
                         bsonType: "array",
                         items: {
                             bsonType: "object",
-                            required: ["attachmentId", "type", "url"],
+                            required: ["type", "url"],
                             properties: {
-                                attachmentId: {bsonType: "int", description: "must be an integer and is required"},
                                 type: {
                                     bsonType: "string",
                                     enum: ["image", "gif", "video"],

@@ -2,42 +2,26 @@ const {createPostCollection} = require('./Post');
 const {createCommentCollection} = require('./Comment');
 const {createReplyCollection} = require('./Reply');
 const {createProfileCollection} = require('./Profile');
+const {createMentionCollection} = require('./Mention');
+const {createHashtagCollection} = require('./Hashtag');
 
 const createCollections = async (getDb) => {
     try {
         const db = getDb();
 
-        // Check if the Post collection already exists
-        const postCollections = await db.listCollections({name: 'post'}).toArray();
-        if (postCollections.length > 0) {
-            console.log("Post collection already exists. Skipping creation.");
-        } else {
-            await createPostCollection(db);
+        const createCollection = async (collectionName, {createCollection}) => {
+            const collection = await db.listCollections({name: `${collectionName}`}).toArray();
+            if (collection.length > 0) console.log(`${collectionName} collection already exists. Skipping creation.`);
+            else await createCollection(db);
         }
 
-        // Check if the Comment collection already exists
-        const commentCollections = await db.listCollections({name: 'comment'}).toArray();
-        if (commentCollections.length > 0) {
-            console.log("Comment collection already exists. Skipping creation.");
-        } else {
-            await createCommentCollection(db);
-        }
+        await createCollection("post", {createPostCollection});
+        await createCollection("comment", {createCommentCollection});
+        await createCollection("reply", {createReplyCollection});
+        await createCollection("profile", {createProfileCollection});
+        await createCollection("mention", {createMentionCollection});
+        await createCollection("hashtag", {createHashtagCollection});
 
-        // Check if the Reply collection already exists
-        const replyCollections = await db.listCollections({name: 'reply'}).toArray();
-        if (replyCollections.length > 0) {
-            console.log("Reply collection already exists. Skipping creation.");
-        } else {
-            await createReplyCollection(db);
-        }
-
-        // Check if the Profile collection already exists
-        const profileCollections = await db.listCollections({name: 'profile'}).toArray();
-        if (profileCollections.length > 0) {
-            console.log("Profile collection already exists. Skipping creation.");
-        } else {
-            await createProfileCollection(db);
-        }
     } catch (err) {
         console.error("Error creating collections:", err);
     }
