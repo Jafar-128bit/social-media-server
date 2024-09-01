@@ -1,7 +1,8 @@
 class MentionService {
-    constructor(mentionModelObject, findByUsername) {
+    constructor(mentionModelObject, findByUsername, getProfileList) {
         this.mentionModelObject = mentionModelObject;
         this.findByUsername = findByUsername;
+        this.getProfileList = getProfileList;
     }
 
     processMention = async (
@@ -12,43 +13,33 @@ class MentionService {
         processType = ""
     ) => {
         try {
-            /* There are two process types --> addMentionProcess & removeMentionProcess */
-            if (processType === "addMentionProcess") {
-                let resultArray = [];
-                for (const mention of mentionList) {
-                    const isMentionExist = await this.getMention(mention);
-                    if (isMentionExist) {
-                        const mentionData = {mentionName: mention, entityId, profileId};
-                        const result = await this.updateMention(mentionData, "addMention");
-                        resultArray.push(result);
-                    } else {
-                        const mentionData = {entityId, profileId, mention, entityType};
-                        const result = await this.insertNewMention(mentionData);
-                        resultArray.push(result);
-                    }
+            return await Promise.all(mentionList.map(async (mention) => {
+                const isMentionExist = await this.getMention(mention);
+                const mentionData = {mentionName: mention, entityId, profileId};
+
+                if (isMentionExist) {
+                    return await this.updateMention(mentionData, processType === "addMentionProcess" ? "addMention" : "removeMention");
+                } else if (processType === "addMentionProcess") {
+                    mentionData.entityType = entityType;
+                    return await this.insertNewMention(mentionData);
+                } else {
+                    throw new Error(`Mention ${mention} does not exist anymore!`);
                 }
-                return resultArray;
-            } else {
-                let resultArray = [];
-                for (const mention of mentionList) {
-                    const isMentionExist = await this.getMention(mention);
-                    if (isMentionExist) {
-                        const mentionData = {mentionName: mention, entityId, profileId};
-                        const result = await this.updateMention(mentionData, "removeMention");
-                        resultArray.push(result);
-                    } else new Error('Mention dose not exist anymore!');
-                }
-                return resultArray;
-            }
+            }));
         } catch (err) {
             throw new Error(err);
         }
-    }
-    getMention = async (mentionName) => {
+    };
+    getMentionList = async (searchTerm) => {
         try {
-            const mentionedProfile = await this.findByUsername(mentionName);
-            const {_id} = mentionedProfile;
-            return await this.mentionModelObject.findById(_id);
+            return await this.getProfileList(searchTerm);
+        } catch (err) {
+            throw new Error(err);
+        }
+    };
+    getMention = async (mention) => {
+        try {
+            return await this.mentionModelObject.findById(mention);
         } catch (err) {
             throw new Error(err);
         }
@@ -57,14 +48,15 @@ class MentionService {
         /* Here the entity type --> post, comment & reply  */
         try {
             const {entityId, profileId, mentionName, entityType} = mentionData;
-
-            const mentionedProfile = await this.findByUsername(mentionName);
+            const username = mentionName.split('@')[1];
+            const mentionedProfile = await this.findByUsername(username);
             const {_id} = mentionedProfile;
 
             const newMention = {
                 entityId: [entityId,],
                 profileId: [profileId,],
-                mentionedProfileId: _id,
+                timestamp: `${new Date()}`,
+                mentionedProfileId: _id.toHexString(),
                 entityType: entityType
             };
             return await this.mentionModelObject.add(newMention);
@@ -78,7 +70,7 @@ class MentionService {
         } catch (err) {
             throw new Error(err);
         }
-    }
+    };
     updateMention = async (mentionData = {}, option = "") => {
         /* options are two types --> removeMention & addMention */
         try {
@@ -99,5 +91,4 @@ class MentionService {
     };
 }
 
-module
-    .exports = MentionService;
+module.exports = MentionService;

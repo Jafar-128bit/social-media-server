@@ -48,4 +48,49 @@ exports.postValidator = (data = {}, type = "") => {
         default:
             throw new Error("Wrong Validator Option");
     }
+};
+exports.hashtagValidator = (data = {},) => {
+    const {searchTerm} = data;
+    return searchTerm !== undefined;
+};
+exports.mentionValidator = (data = {}, type = "") => {
+    const {searchTerm} = data;
+    switch (type) {
+        case "searchTerm":
+            return searchTerm !== undefined;
+        default:
+            throw new Error("Wrong validator option selected");
+    }
+}
+exports.commentValidator = (data = {}, type = "") => {
+    const {postId, profileId, content, commentId, option} = data;
+    switch (type) {
+        case "postId":
+            return postId !== undefined && postId.length > 0;
+        case "profileId":
+            return profileId !== undefined && profileId.length > 0;
+        case "content":
+            return content !== undefined && content.length > 0;
+        case "commentId":
+            return commentId !== undefined && commentId.length > 0;
+        case "editOption":
+            return option !== undefined || option === "addLike" || option === "removeLike";
+        default:
+            throw new Error("Validation Option Wrong!")
+    }
+};
+exports.replyValidator = (data = {}, type = "") => {
+    const {commentId, profileId, content, option} = data;
+    switch (type) {
+        case "profileId":
+            return profileId !== undefined && profileId.length > 0;
+        case "content":
+            return content !== undefined && content.length > 0;
+        case "commentId":
+            return commentId !== undefined && commentId.length > 0;
+        case "editOption":
+            return option !== undefined || option === "addLike" || option === "removeLike";
+        default:
+            throw new Error("Validation Option Wrong!")
+    }
 }

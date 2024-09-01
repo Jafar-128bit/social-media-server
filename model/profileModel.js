@@ -3,12 +3,17 @@ const {ObjectId} = require("mongodb");
 
 class ProfileModel {
     constructor() {
-        this.collection = getDb().db.collection('profile');
+        this.collection = null;
     }
 
-    findProfileById = async (profileId) => await this.collection.findOne({_id: new ObjectId(profileId)});
-    findByUsername = async (username) => await this.collection.findOne({username});
-    getProfileList = async (searchTerm) => await this.collection.find({
+    getCollection() {
+        if (!this.collection) this.collection = getDb().collection('profile');
+        return this.collection;
+    }
+
+    findProfileById = async (profileId) => await this.getCollection().findOne({_id: new ObjectId(profileId)});
+    findByUsername = async (username) => await this.getCollection().findOne({username: username});
+    getProfileList = async (searchTerm) => await this.getCollection().find({
         $or: [
             {username: {$regex: searchTerm, $options: 'i'}},
             {profileName: {$regex: searchTerm, $options: 'i'}}
@@ -18,52 +23,52 @@ class ProfileModel {
         const db = getDb();
         switch (option) {
             case "editPicture":
-                return await this.collection.updateOne(
+                return await this.getCollection().updateOne(
                     {_id: new ObjectId(profileId)},
                     {$set: {profileImage: data}},
                 );
             case "deletePicture":
-                return await this.collection.updateOne(
+                return await this.getCollection().updateOne(
                     {_id: new ObjectId(profileId)},
                     {$set: {profileImage: null}}
                 );
             case "editDescription":
-                return await this.collection.updateOne(
+                return await this.getCollection().updateOne(
                     {_id: new ObjectId(profileId)},
                     {$set: {"profileInfo.profileDescription": data}}
                 );
             case "editLinks":
-                return await this.collection.updateOne(
+                return await this.getCollection().updateOne(
                     {_id: new ObjectId(profileId)},
                     {$set: {"profileInfo.profileLinks": data}}
                 );
             case "addFollower":
-                const addFollowing = await this.collection.updateOne(
+                const addFollowing = await this.getCollection().updateOne(
                     {_id: new ObjectId(profileId)},
                     {$push: {following: data}}
                 );
-                const addFollowers = await this.collection.updateOne(
+                const addFollowers = await this.getCollection().updateOne(
                     {_id: new ObjectId(data)},
                     {$push: {followers: profileId}}
                 );
                 return {addFollowing, addFollowers};
             case "removeFollower":
-                const removeFollowing = await this.collection.updateOne(
+                const removeFollowing = await this.getCollection().updateOne(
                     {_id: new ObjectId(profileId)},
                     {$pull: {following: data}}
                 );
-                const removeFollowers = await this.collection.updateOne(
+                const removeFollowers = await this.getCollection().updateOne(
                     {_id: new ObjectId(data)},
                     {$pull: {followers: profileId}}
                 );
                 return {removeFollowing, removeFollowers};
             case "changePrivateStatus":
-                return await this.collection.updateOne(
+                return await this.getCollection().updateOne(
                     {_id: new ObjectId(profileId)},
                     {$set: {isPrivate: data}}
                 );
             case "editEmail":
-                return await this.collection.updateOne(
+                return await this.getCollection().updateOne(
                     {_id: new ObjectId(profileId)},
                     {$set: {email: data}}
                 );

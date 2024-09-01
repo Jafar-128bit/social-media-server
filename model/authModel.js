@@ -1,17 +1,17 @@
-const { getDb } = require('../config/databaseConfig');
+const {getDb} = require('../config/databaseConfig');
 
 class AuthModel {
     constructor() {
+        this.collection = null;
     }
 
-    findProfileByUsername = async (username) => {
-        const db = getDb();
-        return await db.collection('profile').findOne({ username });
-    };
-    createProfile = async (newProfile) => {
-        const db = getDb();
-        return await db.collection('profile').insertOne(newProfile);
-    };
+    getCollection() {
+        if (!this.collection) this.collection = getDb().collection('profile');
+        return this.collection;
+    }
+
+    findProfileByUsername = async (username) => await this.getCollection().findOne({username});
+    createProfile = async (newProfile) => await this.getCollection().insertOne(newProfile);
 }
 
 module.exports = AuthModel;

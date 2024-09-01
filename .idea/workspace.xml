@@ -2,29 +2,37 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c6885648-40c2-4de8-8d4c-aba6ee66dae7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/model/hashtagModel.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/mentionModel.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sechema/Hashtag.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sechema/Mention.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/mentionService.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/postService.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/test.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/util/extractSpecialWord.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/hashtagController.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/mentionController.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/hashtagRouter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/mentionRoute.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/commentService.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/hashtagService.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/replyService.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/class/relationGraph.js" beforeDir="false" afterPath="$PROJECT_DIR$/class/relationGraph.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/databaseConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/databaseConfig.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controller/authController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/commentController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controller/commentController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/postController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controller/postController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/profileController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controller/profileController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/replyController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controller/replyController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/authModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/authModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/commentModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/commentModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/hashtagModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/hashtagModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mentionModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/mentionModel.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/postModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/postModel.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/profileModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/profileModel.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/authRouter.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/authRouter.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/replyModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/replyModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/commentRouter.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/commentRouter.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/indexRoute.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/indexRoute.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/postRouter.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/postRouter.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/profileRouter.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/profileRouter.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sechema/Post.js" beforeDir="false" afterPath="$PROJECT_DIR$/sechema/Post.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/replyRouter.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/replyRouter.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sechema/Comment.js" beforeDir="false" afterPath="$PROJECT_DIR$/sechema/Comment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sechema/Hashtag.js" beforeDir="false" afterPath="$PROJECT_DIR$/sechema/Hashtag.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sechema/Reply.js" beforeDir="false" afterPath="$PROJECT_DIR$/sechema/Reply.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sechema/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/sechema/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/authService.js" beforeDir="false" afterPath="$PROJECT_DIR$/service/authService.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/profileService.js" beforeDir="false" afterPath="$PROJECT_DIR$/service/profileService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/mentionService.js" beforeDir="false" afterPath="$PROJECT_DIR$/service/mentionService.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/util/reqValidator.js" beforeDir="false" afterPath="$PROJECT_DIR$/util/reqValidator.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,6 +58,17 @@
       </UrlAndAccount>
     </option>
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/app.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/controller/postController.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/model/hashtagModel.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/model/mentionModel.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/routes/indexRoute.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/routes/postRouter.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/service/mentionService.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/service/postService.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/util/extractSpecialWord.js" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -74,7 +93,7 @@
     &quot;last_opened_file_path&quot;: &quot;D:/Projects/Programming/Web Development/Kanban Board Web App/server&quot;,
     &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;inlay.hints&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2022.1\\plugins\\JavaScriptLanguage\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -103,7 +122,10 @@
       <workItem from="1724736146574" duration="15053000" />
       <workItem from="1724848269426" duration="6864000" />
       <workItem from="1724903987527" duration="18141000" />
-      <workItem from="1725015789796" duration="2389000" />
+      <workItem from="1725015789796" duration="2670000" />
+      <workItem from="1725025649829" duration="3599000" />
+      <workItem from="1725061129325" duration="33240000" />
+      <workItem from="1725157235759" duration="4064000" />
     </task>
     <servers />
   </component>

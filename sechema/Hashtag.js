@@ -3,9 +3,9 @@ exports.createHashtagCollection = async (db) => {
         const hashtagSchema = {
             $jsonSchema: {
                 bsonType: "object",
-                required: ["postId", "profileId", "timestamp", "hashtag"],
+                required: ["entityId", "profileId", "timestamp", "hashtag", "entityType"],
                 properties: {
-                    postId: {
+                    entityId: {
                         bsonType: "array",
                         items: {bsonType: "string"},
                         description: "must be an array string and is required"
@@ -17,6 +17,7 @@ exports.createHashtagCollection = async (db) => {
                     },
                     timestamp: {bsonType: "string", description: "must be a string (ISO date) and is required"},
                     hashtag: {bsonType: "string", description: "must be a string and is required"},
+                    entityType: {bsonType: "string", description: "must be a string and is required"},
                 }
             }
         };
