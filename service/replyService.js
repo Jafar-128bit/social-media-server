@@ -1,9 +1,10 @@
 const extractSpecialWord = require("../util/extractSpecialWord");
 
 class ReplyService {
-    constructor(ISC, modelObject) {
+    constructor(ISC, modelObject, messageQueue) {
         this.modelObject = modelObject;
         this.ISC = ISC;
+        this.messageQueue = messageQueue;
     }
 
     createReplyService = async (replyData = {}) => {
@@ -27,6 +28,7 @@ class ReplyService {
 
             this.ISC.removeServiceAddress('processMention');
             this.ISC.removeServiceAddress('processHashtag');
+            this.ISC.removeServiceAddress('getByUsername');
 
             return {
                 postResult: resultReply,
@@ -39,15 +41,15 @@ class ReplyService {
     };
     getByCommentId = async (commentId) => {
         try {
-            const result = await this.modelObject.findByCommentId(commentId);
-            return result;
+            return await this.modelObject.findByCommentId(commentId);
+            ;
         } catch (err) {
             throw new Error(err);
         }
     };
     getReplyIdListByCommentId = async (commentId) => {
         try {
-            const replyList = this.getByCommentId(commentId);
+            const replyList = await this.getByCommentId(commentId);
             return replyList.map(reply => reply._id.toHexString());
         } catch (err) {
             throw new Error(err);
@@ -84,7 +86,9 @@ class ReplyService {
     };
     deleteReplyService = async (replyId) => {
         try {
-            const getReplyData = await this.getByReplyId(replyId, "getByReplyId");
+            const getReplyData = await this.getByReplyId(replyId);
+            if (!getReplyData) throw new Error("Reply not Found");
+
             const {hashList, mentionList} = extractSpecialWord(getReplyData.content);
             const resultMention = mentionList.length !== 0 ?
                 await this.ISC.resolveService('processMention')(mentionList, replyId, getReplyData.profileId, "removeMentionProcess")
@@ -92,17 +96,14 @@ class ReplyService {
             const resultHashtag = hashList.length !== 0 ?
                 await this.ISC.resolveService('processHashtag')(hashList, replyId, getReplyData.profileId, "removeHashtagProcess")
                 : null;
-            const resultReply = await this.serviceObject.delete(replyId);
-
-            this.ISC.removeServiceAddress('processMention');
-            this.ISC.removeServiceAddress('processHashtag');
-
+            const resultReply = await this.modelObject.delete(replyId);
             return {
                 postResult: resultReply,
                 hashtagResult: resultHashtag,
                 mentionResult: resultMention
             };
         } catch (err) {
+            console.log(err)
             throw new Error(err);
         }
     };

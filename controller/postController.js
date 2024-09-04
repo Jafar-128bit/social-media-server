@@ -1,8 +1,9 @@
 const extractSpecialWord = require('../util/extractSpecialWord');
 
 class PostController {
-    constructor(serviceObject) {
+    constructor(serviceObject, queueWorkerService) {
         this.serviceObject = serviceObject;
+        this.queueWorkerService = queueWorkerService;
     }
 
     #createResponse = (statusCode, message, code, result = null) => {
@@ -58,13 +59,14 @@ class PostController {
     };
     deletePostController = async (postId) => {
         try {
-            const result = await this.serviceObject.deletePostService(postId);
-            console.log(result);
+            const result = await this.serviceObject.postDeleteWorker(postId);
+            setImmediate(() => this.queueWorkerService.processQueue());
             return this.#createResponse(200, "Post deleted!", "OK", result);
         } catch (err) {
             return this.#createResponse(err.statusCode || 500, err.message || "An error occurred", err.code || "ERROR");
         }
     };
+
 }
 
 module.exports = PostController;

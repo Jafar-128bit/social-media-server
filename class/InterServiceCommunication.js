@@ -12,11 +12,15 @@ class InterServiceCommunication {
     resolveService(serviceName) {
         const serviceAddress = this.serviceAddresses[serviceName];
         if (serviceAddress) return serviceAddress;
-        throw new Error("No Service Found in the Network!");
+        throw new Error(`${serviceAddress} Service not found in the Network!`);
     }
 
     removeServiceAddress(serviceName) {
         delete this.serviceAddresses[serviceName];
+    }
+
+    getISC() {
+        return this.serviceAddresses;
     }
 }
 

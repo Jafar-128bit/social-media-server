@@ -27,6 +27,7 @@ const HashtagServiceClass = require('../service/hashtagService');
 const ReplyServiceClass = require('../service/replyService');
 const CommentServiceClass = require('../service/commentService');
 const PostServiceClass = require('../service/postService');
+const QueueWorkerService = require('../service/queueWorkerService');
 /* All Controller Classes */
 const AuthControllerClass = require("../controller/authController");
 const ProfileControllerClass = require("../controller/profileController");
@@ -37,7 +38,7 @@ const CommentControllerClass = require("../controller/commentController");
 const PostControllerClass = require("../controller/postController");
 
 // Process Queue
-const processQueue = new Queue();
+const messageQueue = new Queue();
 
 // Instantiate Models
 const authModel = new AuthModelClass();
@@ -53,9 +54,10 @@ const authService = new AuthServiceClass(ISC, authModel);
 const profileService = new ProfileServiceClass(ISC, profileModel);
 const mentionService = new MentionServiceClass(ISC, mentionModel);
 const hashtagService = new HashtagServiceClass(ISC, hashtagModel);
-const replyService = new ReplyServiceClass(ISC, replyModel);
-const commentService = new CommentServiceClass(ISC, commentModel);
-const postService = new PostServiceClass(ISC, postModel);
+const replyService = new ReplyServiceClass(ISC, replyModel, messageQueue);
+const commentService = new CommentServiceClass(ISC, commentModel, messageQueue);
+const postService = new PostServiceClass(ISC, postModel, messageQueue);
+const queueWorkerService = new QueueWorkerService(messageQueue);
 
 // Instantiate Controllers with their respective services
 const authController = new AuthControllerClass(authService);
@@ -63,8 +65,8 @@ const profileController = new ProfileControllerClass(profileService);
 const mentionController = new MentionControllerClass(mentionService);
 const hashtagController = new HashtagControllerClass(hashtagService);
 const replyController = new ReplyControllerClass(replyService);
-const commentController = new CommentControllerClass(commentService);
-const postController = new PostControllerClass(postService);
+const commentController = new CommentControllerClass(commentService, queueWorkerService);
+const postController = new PostControllerClass(postService, queueWorkerService);
 
 // Define Service Networks
 const serviceNetworks = {
@@ -77,7 +79,13 @@ const serviceNetworks = {
         remove: {
             processHashtag: hashtagService.processHashtag,
             processMention: mentionService.processMention,
+            getByUsername: profileService.getProfileService,
+
             getCommentIdList: commentService.getCommentIdListByPostId,
+            getReplyIdList: replyService.getReplyIdListByCommentId,
+
+            deleteCommentService: commentService.deleteCommentService,
+            deleteReplyService: replyService.deleteReplyService,
         },
     },
     comment: {
@@ -89,7 +97,10 @@ const serviceNetworks = {
         remove: {
             processHashtag: hashtagService.processHashtag,
             processMention: mentionService.processMention,
+            getByUsername: profileService.getProfileService,
+
             getReplyIdList: replyService.getReplyIdListByCommentId,
+            deleteReplyService: replyService.deleteReplyService
         },
     },
     reply: {
@@ -101,7 +112,7 @@ const serviceNetworks = {
         remove: {
             processHashtag: hashtagService.processHashtag,
             processMention: mentionService.processMention,
-            getReplyIdList: replyService.getReplyIdListByCommentId,
+            getByUsername: profileService.getProfileService,
         },
     },
 };

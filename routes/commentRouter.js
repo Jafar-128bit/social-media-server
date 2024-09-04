@@ -7,7 +7,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
         if (isValid) {
             try {
                 const {postId} = req.body;
-                const result = await controllerObject.getComment(postId, "getByPostId");
+                const result = await controllerObject.getCommentController(postId, "getByPostId");
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(404).json(err);
@@ -19,7 +19,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
         if (isValid) {
             try {
                 const {profileId} = req.body;
-                const result = await controllerObject.getComment(profileId, "getByProfileId");
+                const result = await controllerObject.getCommentController(profileId, "getByProfileId");
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(404).json(err);
@@ -33,7 +33,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
         if (isValidPost && isValidProfile && isValidContent) {
             try {
                 const {postId, profileId, content} = req.body;
-                const result = await controllerObject.addComment({postId, profileId, content});
+                const result = await controllerObject.addCommentController({postId, profileId, content});
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(404).json(err);
@@ -48,7 +48,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
             try {
                 const {commentId, profileId} = req.body;
                 const {option} = req.params;
-                const result = await controllerObject.updateLikeComment({commentId, profileId}, option);
+                const result = await controllerObject.updateLikeCommentController({commentId, profileId}, option);
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(404).json(err);
@@ -60,7 +60,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
         if (isValid) {
             try {
                 const {commentId} = req.body;
-                const result = await controllerObject.deleteComment(commentId);
+                const result = await controllerObject.deleteCommentController(commentId);
                 return res.status(result.statusCode).json(result.data);
             } catch (err) {
                 return res.status(404).json(err);

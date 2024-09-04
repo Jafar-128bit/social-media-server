@@ -32,7 +32,7 @@ class Queue extends EventEmitter {
     }
 
     // Add a task to the queue with optional priority
-    enqueue(serviceCallback, serviceParameters = [], priority = 0) {
+    enqueue({serviceCallback, serviceParameters = [], priority = 0}) {
         const newQueueObject = new QueueObject(serviceCallback, serviceParameters, priority);
         this.queue.push(newQueueObject);
         this.queue.sort((a, b) => a.priority - b.priority); // Sort by priority
@@ -46,7 +46,7 @@ class Queue extends EventEmitter {
     }
 
     // Run all tasks concurrently with a limit on the number of simultaneous tasks
-    async runAllQueuesConcurrently(concurrency = 5, retries = 3) {
+    async runAllQueuesConcurrently(concurrency = 1, retries = 2) {
         const results = [];
         const activeTasks = [];
 

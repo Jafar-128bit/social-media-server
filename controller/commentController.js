@@ -1,8 +1,9 @@
 const extractSpecialWord = require('../util/extractSpecialWord');
 
 class CommentController {
-    constructor(serviceObject) {
+    constructor(serviceObject, queueWorkerService) {
         this.serviceObject = serviceObject;
+        this.queueWorkerService = queueWorkerService;
     }
 
     #createResponse = (statusCode, message, code, result = null) => {
@@ -16,7 +17,7 @@ class CommentController {
         };
     };
 
-    addComment = async (commentData = {}) => {
+    addCommentController = async (commentData = {}) => {
         try {
             const result = await this.serviceObject.createCommentService(commentData);
             return this.#createResponse(200, "Comment Inserted Successfully", "OK", result);
@@ -28,7 +29,7 @@ class CommentController {
             );
         }
     };
-    getComment = async (entityId, option = "") => {
+    getCommentController = async (entityId, option = "") => {
         /* Options are -- getByCommentId, getByPostId & getByProfileId */
         try {
             let result;
@@ -54,7 +55,7 @@ class CommentController {
             );
         }
     };
-    updateLikeComment = async (commentData = {}, option = "") => {
+    updateLikeCommentController = async (commentData = {}, option = "") => {
         /* Options are -- addLike & removeLike */
         const {commentId, profileId} = commentData;
         const updateData = {
@@ -74,9 +75,10 @@ class CommentController {
             );
         }
     };
-    deleteComment = async (commentId) => {
+    deleteCommentController = async (commentId) => {
         try {
-            const result = await this.serviceObject.deleteCommentService(commentId);
+            const result = await this.serviceObject.commentDeleteWorker(commentId);
+            setImmediate(() => this.queueWorkerService.processQueue());
             return this.#createResponse(200, "Comment Deleted", "OK", result);
         } catch (err) {
             return this.#createResponse(

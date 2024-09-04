@@ -80,10 +80,12 @@ exports.commentValidator = (data = {}, type = "") => {
     }
 };
 exports.replyValidator = (data = {}, type = "") => {
-    const {commentId, profileId, content, option} = data;
+    const {commentId, profileId, content, option, replyId} = data;
     switch (type) {
         case "profileId":
             return profileId !== undefined && profileId.length > 0;
+        case "replyId":
+            return replyId !== undefined && replyId.length > 0;
         case "content":
             return content !== undefined && content.length > 0;
         case "commentId":

@@ -19,7 +19,7 @@ class ReplyController {
     addReply = async (replyData = {}) => {
         try {
             const result = await this.serviceObject.createReplyService(replyData);
-            return this.#createResponse(200, "Comment Inserted Successfully", "OK", result);
+            return this.#createResponse(200, "Reply Inserted Successfully", "OK", result);
         } catch (err) {
             return this.#createResponse(
                 err.statusCode || 500,

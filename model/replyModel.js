@@ -14,7 +14,7 @@ class ReplyModel {
     add = async (replyData = {}) => await this.getCollection().insertOne(replyData);
     findByCommentId = async (commentId) => await this.getCollection().find({commentId: commentId}).toArray();
     findByProfileId = async (profileId) => await this.getCollection().find({profileId: profileId}).toArray();
-    findByReplyId = async (replyId) => await this.getCollection().findOne({id: new ObjectId(replyId)});
+    findByReplyId = async (replyId) => await this.getCollection().findOne({_id: new ObjectId(replyId)});
     addLike = async ({replyId, profileId}) => await this.getCollection().updateOne(
         {_id: new ObjectId(replyId)},
         {$push: {profileId: profileId}}
