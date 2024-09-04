@@ -78,7 +78,7 @@ class CommentController {
     deleteCommentController = async (commentId) => {
         try {
             const result = await this.serviceObject.commentDeleteWorker(commentId);
-            setImmediate(() => this.queueWorkerService.processQueue());
+            setImmediate(() => this.queueWorkerService.processQueue("commentNetwork"));
             return this.#createResponse(200, "Comment Deleted", "OK", result);
         } catch (err) {
             return this.#createResponse(

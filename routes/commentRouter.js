@@ -2,7 +2,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
     const express = require('express');
     const router = express.Router();
 
-    router.get('/getForPost', async (req, res) => {
+    router.get('/getForPost', middlewareObject.authMiddleware, async (req, res) => {
         const isValid = validator(req.body, "postId");
         if (isValid) {
             try {
@@ -14,7 +14,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
             }
         } else return res.status(404).json({message: "Post Id is empty!", code: "BAD"});
     });
-    router.get('/getForProfile', async (req, res) => {
+    router.get('/getForProfile', middlewareObject.authMiddleware, async (req, res) => {
         const isValid = validator(req.body, "profileId");
         if (isValid) {
             try {
@@ -26,7 +26,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
             }
         } else return res.status(404).json({message: "Profile Id is empty!", code: "BAD"});
     });
-    router.post('/add', middlewareObject.serviceRegistrationAddEntity,async (req, res) => {
+    router.post('/add', middlewareObject.authMiddleware, middlewareObject.serviceRegistrationAddEntity, async (req, res) => {
         const isValidPost = validator(req.body, "postId");
         const isValidProfile = validator(req.body, "profileId");
         const isValidContent = validator(req.body, "content");
@@ -40,7 +40,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
             }
         } else return res.status(404).json({message: "Comment Data is empty!", code: "BAD"});
     });
-    router.patch('/editLike/:option', async (req, res) => {
+    router.patch('/editLike/:option', middlewareObject.authMiddleware, async (req, res) => {
         const isValidComment = validator(req.body, "commentId");
         const isValidProfile = validator(req.body, "profileId");
         const isValidOption = validator(req.params, "editOption");
@@ -55,7 +55,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
             }
         } else return res.status(404).json({message: "Comment Id or Profile Id is empty!", code: "BAD"});
     });
-    router.delete('/delete', middlewareObject.serviceRegistrationRemoveEntity,async (req, res) => {
+    router.delete('/delete', middlewareObject.authMiddleware, middlewareObject.serviceRegistrationRemoveEntity, async (req, res) => {
         const isValid = validator(req.body, "commentId");
         if (isValid) {
             try {

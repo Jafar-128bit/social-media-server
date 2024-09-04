@@ -60,7 +60,7 @@ class PostController {
     deletePostController = async (postId) => {
         try {
             const result = await this.serviceObject.postDeleteWorker(postId);
-            setImmediate(() => this.queueWorkerService.processQueue());
+            setImmediate(() => this.queueWorkerService.processQueue("postNetwork"));
             return this.#createResponse(200, "Post deleted!", "OK", result);
         } catch (err) {
             return this.#createResponse(err.statusCode || 500, err.message || "An error occurred", err.code || "ERROR");

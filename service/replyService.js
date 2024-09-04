@@ -107,6 +107,11 @@ class ReplyService {
             throw new Error(err);
         }
     };
+    clearReplyICSNetwork = async () => {
+        this.ISC.removeServiceAddress('processMention');
+        this.ISC.removeServiceAddress('processHashtag');
+        this.ISC.removeServiceAddress('getByUsername');
+    };
 }
 
 module.exports = ReplyService;

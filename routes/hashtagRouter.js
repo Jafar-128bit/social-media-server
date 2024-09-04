@@ -2,7 +2,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
     const express = require('express');
     const router = express.Router();
 
-    router.get('/getHashtagList', async (res, req) => {
+    router.get('/getHashtagList', middlewareObject.authMiddleware, async (res, req) => {
         const isValid = validator(req.body);
         if (isValid) {
             const {searchTerm} = req.body;

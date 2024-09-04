@@ -2,7 +2,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
     const express = require('express');
     const router = express.Router();
 
-    router.get("/getProfile", async (req, res) => {
+    router.get("/getProfile", middlewareObject.authMiddleware,async (req, res) => {
         const isValid = validator(req.query, 'idValidator');
         if (isValid) {
             const {profileId} = req.query;
@@ -16,7 +16,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
 
         } else return res.status(404).json({message: "Profile Id is Empty!", code: "BAD"});
     });
-    router.get("/getProfileList", async (req, res) => {
+    router.get("/getProfileList", middlewareObject.authMiddleware,async (req, res) => {
         const isValid = validator(req.query, 'searchValidator');
         if (isValid) {
             const {searchTerm} = req.query;
@@ -31,7 +31,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
         } else return res.status(404).json({message: "Profile Id is Empty!", code: "BAD"});
     });
 
-    router.patch("/editProfilePicture", middlewareObject.fileProcess.single('file'), async (req, res) => {
+    router.patch("/editProfilePicture", middlewareObject.authMiddleware,middlewareObject.fileProcess.single('file'), async (req, res) => {
         const isValid = validator(req.body, "idValidator");
         if (isValid) {
             const {profileId} = req.body;
@@ -45,7 +45,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
 
         } else return res.status(404).json({message: "Profile Id is Empty!", code: "BAD"});
     });
-    router.patch('/editProfileDescription', async (req, res) => {
+    router.patch('/editProfileDescription', middlewareObject.authMiddleware,async (req, res) => {
         const isIdValidated = validator(req.body, "idValidator");
         const isDescriptionValidated = validator(req.body, "descriptionValidator");
 
@@ -63,7 +63,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
 
         } else return res.status(404).json({message: "Profile Id or Description is Empty!", code: "BAD"});
     });
-    router.patch('/editProfileLink', async (req, res) => {
+    router.patch('/editProfileLink', middlewareObject.authMiddleware,async (req, res) => {
         const isIdValidated = validator(req.body, "idValidator");
         const isLinkValidated = validator(req.body, "linkValidator");
 
@@ -78,7 +78,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
 
         } else return res.status(404).json({message: "Profile Id or Link List is Empty!", code: "BAD"});
     });
-    router.patch('/addFollowing', async (req, res) => {
+    router.patch('/addFollowing', middlewareObject.authMiddleware,async (req, res) => {
         const isValid = validator(req.query, 'followingIdValidator');
         if (isValid) {
             const {profileId, followingProfileId} = req.query;
@@ -92,7 +92,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
 
         } else return res.status(404).json({message: "Profile Id is Empty!", code: "BAD"});
     });
-    router.patch('/editPrivate', async (req, res) => {
+    router.patch('/editPrivate', middlewareObject.authMiddleware,async (req, res) => {
         const isIdValidated = validator(req.body, "idValidator");
         const isPrivateDataValidated = validator(req.body, "privateValidator");
 
@@ -107,7 +107,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
 
         } else return res.status(404).json({message: "Profile Id or status is Empty!", code: "BAD"});
     });
-    router.patch('/editEmail', async (req, res) => {
+    router.patch('/editEmail', middlewareObject.authMiddleware,async (req, res) => {
         const isIdValidated = validator(req.body, "idValidator");
         const isEmailDataValidated = validator(req.body, "emailValidator");
 
@@ -123,7 +123,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
         } else return res.status(404).json({message: "Profile Id or Email is Empty!", code: "BAD"});
     });
 
-    router.delete('/deleteFollowing', async (req, res) => {
+    router.delete('/deleteFollowing', middlewareObject.authMiddleware,async (req, res) => {
         const isValid = validator(req.query, 'followingIdValidator');
         if (isValid) {
             const {profileId, followingProfileId} = req.query;
@@ -137,7 +137,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
 
         } else return res.status(404).json({message: "Profile Id is Empty!", code: "BAD"});
     });
-    router.delete('/deleteProfilePicture', async (req, res) => {
+    router.delete('/deleteProfilePicture', middlewareObject.authMiddleware,async (req, res) => {
         const isValid = validator(req.body, "idValidator");
         if (isValid) {
             const {profileId} = req.body;

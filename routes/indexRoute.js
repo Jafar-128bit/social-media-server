@@ -57,7 +57,7 @@ const hashtagService = new HashtagServiceClass(ISC, hashtagModel);
 const replyService = new ReplyServiceClass(ISC, replyModel, messageQueue);
 const commentService = new CommentServiceClass(ISC, commentModel, messageQueue);
 const postService = new PostServiceClass(ISC, postModel, messageQueue);
-const queueWorkerService = new QueueWorkerService(messageQueue);
+const queueWorkerService = new QueueWorkerService(messageQueue, ISC);
 
 // Instantiate Controllers with their respective services
 const authController = new AuthControllerClass(authService);
