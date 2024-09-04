@@ -10,7 +10,7 @@ class AuthModel {
         return this.collection;
     }
 
-    findProfileByUsername = async (username) => await this.getCollection().findOne({username});
+    findProfileByUsername = async (username) => await this.getCollection().findOne({username: username});
     createProfile = async (newProfile) => await this.getCollection().insertOne(newProfile);
 }
 

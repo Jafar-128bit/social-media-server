@@ -1,5 +1,5 @@
 const {ObjectId} = require('mongodb');
-const {getDb} = require("../config/databaseConfig");
+const {getDb, client} = require("../config/databaseConfig");
 
 class CommentModel {
     constructor() {
@@ -13,16 +13,19 @@ class CommentModel {
 
     add = async (commentData) => await this.getCollection().insertOne(commentData);
     findByPostId = async (postId) => await this.getCollection().find({postId: postId}).toArray();
-    findByProfileId = async (profileId) => await this.getCollection().find({postId: profileId}).toArray();
-    addLikeById = async ({commentId, profileId}) => await this.getCollection().updateOne(
+    findByProfileId = async (profileId) => await this.getCollection().find({profileId: profileId}).toArray();
+    findByCommentId = async (commentId) => await this.getCollection().findOne({_id: new ObjectId(commentId)});
+    addLike = async ({commentId, profileId}) => await this.getCollection().updateOne(
         {_id: new ObjectId(commentId)},
-        {$push: {profileId: profileId}},
+        {$push: {profileId: profileId}}
     );
-    removeLikeById = async ({commentId, profileId}) => await this.getCollection().updateOne(
+    removeLike = async ({commentId, profileId}) => await this.getCollection().updateOne(
         {_id: new ObjectId(commentId)},
-        {pull: {profileId: profileId}},
+        {$pull: {profileId: profileId}}
     );
-    deleteById = async (commentId) => await this.getCollection().deleteOne({_id: new ObjectId(commentId)});
+    delete = async (commentId) => await this.getCollection().deleteOne({_id: new ObjectId(commentId)});
+    deleteByPostId = async (postId) => await this.getCollection().delete({postId: postId})
+    startTransactionSession = async () => await client.startSession();
 }
 
 module.exports = CommentModel;

@@ -1,10 +1,14 @@
+const extractSpecialWord = require("../util/extractSpecialWord");
+
 class CommentService {
-    constructor(commentModelObject) {
-        this.commentModelObject = commentModelObject;
+    constructor(ISC, modelObject) {
+        this.modelObject = modelObject;
+        this.ISC = ISC;
     }
 
-    insertComment = async (commentData = {}) => {
+    createCommentService = async (commentData) => {
         try {
+            const {hashList, mentionList} = extractSpecialWord(commentData.content);
             const {postId, profileId, content} = commentData;
             const newComments = {
                 postId: postId,
@@ -12,27 +16,57 @@ class CommentService {
                 timestamp: new Date().toString(),
                 content: content,
                 likeIds: [],
-            }
-            return await this.commentModelObject.add(newComments);
+            };
+            const resultComment = await this.modelObject.add(newComments);
+            const resultMention = mentionList.length !== 0
+                ? await this.ISC.resolveService('processMention')(mentionList, resultComment.insertedId.toHexString(), commentData.profileId, "addMentionProcess")
+                : null;
+            const resultHashtag = hashList.length !== 0
+                ? await this.ISC.resolveService('processHashtag')(hashList, resultComment.insertedId.toHexString(), commentData.profileId, "addHashtagProcess")
+                : null;
+
+            this.ISC.removeServiceAddress('processMention');
+            this.ISC.removeServiceAddress('processHashtag');
+
+            return {
+                postResult: resultComment,
+                hashtagResult: resultHashtag,
+                mentionResult: resultMention
+            };
         } catch (err) {
             throw new Error(err);
         }
     };
-    getCommentByPostId = async (postId) => {
+    getByPostId = async (postId) => {
         try {
-            return await this.commentModelObject.findByPostId(postId);
+            return await this.modelObject.findByPostId(postId);
         } catch (err) {
             throw new Error(err);
         }
     };
-    getCommentByProfileId = async (profileId) => {
+    getCommentIdListByPostId = async (postId) => {
         try {
-            return await this.commentModelObject.findByProfileId(profileId);
+            const commentList = await this.getByPostId(postId);
+            return commentList.map(comment => comment._id.toHexString());
         } catch (err) {
             throw new Error(err);
         }
     };
-    updateComment = async (commentData = {}, options = "") => {
+    getByProfileId = async (profileId) => {
+        try {
+            return await this.modelObject.findByProfileId(profileId);
+        } catch (err) {
+            throw new Error(err);
+        }
+    };
+    getCommentById = async (commentId) => {
+        try {
+            return await this.modelObject.findByCommentId(commentId);
+        } catch (err) {
+            throw new Error(err);
+        }
+    };
+    updateCommentLike = async (commentData, options = "") => {
         /* Option are -- addLike & removeLike */
         try {
             const {commentId, profileId} = commentData;
@@ -41,15 +75,34 @@ class CommentService {
                 profileId: profileId,
             };
             return options === "addLike"
-                ? this.commentModelObject.addLikeById(updateData)
-                : this.commentModelObject.removeLikeById(updateData);
+                ? this.modelObject.addLike(updateData)
+                : this.modelObject.removeLike(updateData);
         } catch (err) {
             throw new Error(err);
         }
     };
-    deleteComment = async (commentId) => {
+    deleteCommentService = async (commentId) => {
         try {
-            return await this.commentModelObject.deleteById(commentId);
+            const getCommentData = await this.getCommentById(commentId);
+            if (!getCommentData) throw new Error("Comment not Found");
+            const {hashList, mentionList} = extractSpecialWord(getCommentData.content);
+
+            const resultMention = mentionList.length !== 0 ?
+                await this.ISC.resolveService('processMention')(mentionList, commentId, getCommentData.profileId, "removeMentionProcess")
+                : null;
+            const resultHashtag = hashList.length !== 0 ?
+                await this.ISC.resolveService('processHashtag')(hashList, commentId, getCommentData.profileId, "removeHashtagProcess")
+                : null;
+            const resultComment = await this.modelObject.delete(commentId);
+
+            this.ISC.removeServiceAddress('processMention');
+            this.ISC.removeServiceAddress('processHashtag');
+
+            return {
+                postResult: resultComment,
+                hashtagResult: resultHashtag,
+                mentionResult: resultMention,
+            };
         } catch (err) {
             throw new Error(err);
         }

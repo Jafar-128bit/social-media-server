@@ -11,15 +11,22 @@ class PostModel {
         return this.collection;
     }
 
+    add = async (post) => await this.getCollection().insertOne(post);
     findPostById = async (postId) => await this.getCollection().findOne({_id: new ObjectId(postId)});
-    findPostByProfileId = async (profileId) => await this.getCollection().find({profileId: profileId}).toArray();
-    insertPost = async (post) => await this.getCollection().insertOne(post);
-    updatePostLikeById = async (postId, profileId) => await this.getCollection().updateOne(
+    findByProfileId = async (profileId) => await this.getCollection().find({profileId: profileId}).toArray();
+    findRepostsByProfileId = async (profileId) => await this.getCollection().find({
+        profileId: profileId,
+        isRepost: true
+    },).toArray();
+    addLike = async ({postId, profileId}) => await this.getCollection().updateOne(
         {_id: new ObjectId(postId)},
-        {$addToSet: {likeIds: profileId}}
+        {$push: {likeIds: profileId}}
     );
-    deletePostById = async (postId) => await this.getCollection().deleteOne({_id: new ObjectId(postId)});
-    findReposts = async (profileId) => await this.getCollection().find({profileId: profileId, isRepost: true},).toArray();
+    removeLike = async ({postId, profileId}) => await this.getCollection().updateOne(
+        {_id: new ObjectId(postId)},
+        {$pull: {likeIds: profileId}}
+    );
+    delete = async (postId) => await this.getCollection().deleteOne({_id: new ObjectId(postId)});
 }
 
 module.exports = PostModel;

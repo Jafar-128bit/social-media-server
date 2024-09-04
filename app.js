@@ -8,7 +8,7 @@ const createCollections = require('./sechema/index');
 
 const app = express();
 
-const indexRouter = require('./routes/indexRoute');
+const initializeRoutes = require('./routes/indexRoute');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -21,7 +21,7 @@ const initializeApp = async () => {
     try {
         await connectDB();
         await createCollections(getDb);
-        await indexRouter(app, '/api/v1');
+        await initializeRoutes(app, '/api/v1');
         console.error("Database is now connected!");
     } catch (err) {
         console.error("Failed to initialize the application:", err);

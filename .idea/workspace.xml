@@ -2,22 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c6885648-40c2-4de8-8d4c-aba6ee66dae7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/controller/hashtagController.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/mentionController.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/hashtagRouter.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/mentionRoute.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/commentService.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/hashtagService.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/replyService.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/class/InterServiceCommunication.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/class/ProcessQueue.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/middleware/serviceRegistrationMiddleware.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/indexRouter.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/class/relationGraph.js" beforeDir="false" afterPath="$PROJECT_DIR$/class/relationGraph.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/databaseConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/databaseConfig.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controller/authController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/commentController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controller/commentController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/postController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controller/postController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/profileController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controller/profileController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/replyController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controller/replyController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/authorizeUser.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/authorizeUser.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/authModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/authModel.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/commentModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/commentModel.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/hashtagModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/hashtagModel.js" afterDir="false" />
@@ -25,15 +20,22 @@
       <change beforePath="$PROJECT_DIR$/model/postModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/postModel.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/profileModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/profileModel.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/replyModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/replyModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/commentRouter.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/commentRouter.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/indexRoute.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/indexRoute.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/postRouter.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/postRouter.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/profileRouter.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/profileRouter.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/replyRouter.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/replyRouter.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sechema/Comment.js" beforeDir="false" afterPath="$PROJECT_DIR$/sechema/Comment.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sechema/Hashtag.js" beforeDir="false" afterPath="$PROJECT_DIR$/sechema/Hashtag.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sechema/Reply.js" beforeDir="false" afterPath="$PROJECT_DIR$/sechema/Reply.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sechema/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/sechema/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sechema/Mention.js" beforeDir="false" afterPath="$PROJECT_DIR$/sechema/Mention.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/authService.js" beforeDir="false" afterPath="$PROJECT_DIR$/service/authService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/commentService.js" beforeDir="false" afterPath="$PROJECT_DIR$/service/commentService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/hashtagService.js" beforeDir="false" afterPath="$PROJECT_DIR$/service/hashtagService.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/mentionService.js" beforeDir="false" afterPath="$PROJECT_DIR$/service/mentionService.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/reqValidator.js" beforeDir="false" afterPath="$PROJECT_DIR$/util/reqValidator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/postService.js" beforeDir="false" afterPath="$PROJECT_DIR$/service/postService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/profileService.js" beforeDir="false" afterPath="$PROJECT_DIR$/service/profileService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/replyService.js" beforeDir="false" afterPath="$PROJECT_DIR$/service/replyService.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,7 +127,10 @@
       <workItem from="1725015789796" duration="2670000" />
       <workItem from="1725025649829" duration="3599000" />
       <workItem from="1725061129325" duration="33240000" />
-      <workItem from="1725157235759" duration="4064000" />
+      <workItem from="1725157235759" duration="25193000" />
+      <workItem from="1725277090230" duration="4931000" />
+      <workItem from="1725340529452" duration="24903000" />
+      <workItem from="1725433289269" duration="8655000" />
     </task>
     <servers />
   </component>

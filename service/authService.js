@@ -3,26 +3,31 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 class AuthService {
-    constructor(modelObject) {
+    constructor(ISC, modelObject) {
         this.modelObject = modelObject;
+        this.ISC = ISC;
     }
 
-    signIn = async ({ username, password }) => {
-        const profile = await this.modelObject.findProfileByUsername(username);
-        if (!profile) throw new Error('Username not found');
+    signIn = async ({username, password}) => {
+        try {
+            const profile = await this.modelObject.findProfileByUsername(username);
+            if (!profile) throw new Error('Username not found');
 
-        const isPasswordValid = await bcrypt.compare(password, profile.password);
-        if (!isPasswordValid) throw new Error('Invalid password');
+            const isPasswordValid = await bcrypt.compare(password, profile.password);
+            if (!isPasswordValid) throw new Error('Invalid password');
 
-        const token = jwt.sign(
-            { profileId: profile._id, username: profile.username },
-            "tempkeyfornow123",
-            { expiresIn: '24h' }
-        );
+            const token = jwt.sign(
+                {profileId: profile._id, username: profile.username},
+                "tempkeyfornow123",
+                {expiresIn: '24h'}
+            );
 
-        return { token };
+            return {token};
+        } catch (err) {
+            throw new Error(err);
+        }
     };
-    signUp = async ({ firstName, lastName, username, password, email, profileDescription }) => {
+    signUp = async ({firstName, lastName, username, password, email, profileDescription}) => {
         const profileName = `${firstName} ${lastName}`;
 
         const salt = await bcrypt.genSalt(10);

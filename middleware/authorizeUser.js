@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const {tokenRefiner} = require('../util/tokenRefiner');
 
-exports.authorizeUser = (req, res, next) => {
+const authorizeUser = (req, res, next) => {
     const InitialToken = req.headers.authorization;
     const token = tokenRefiner(InitialToken);
     if (!token) {
@@ -15,3 +15,5 @@ exports.authorizeUser = (req, res, next) => {
         return res.status(401).json({ message: 'Invalid token' });
     }
 }
+
+module.exports = authorizeUser;

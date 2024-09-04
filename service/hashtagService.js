@@ -1,14 +1,13 @@
 class HashtagService {
-    constructor(hashtagModelObject, findByUsername) {
-        this.hashtagModelObject = hashtagModelObject;
-        this.findByUsername = findByUsername;
+    constructor(ISC, modelObject) {
+        this.modelObject = modelObject;
+        this.ISC = ISC;
     }
 
     processHashtag = async (
         hashtagList = [],
         entityId = "",
         profileId = "",
-        entityType = "",
         processType = ""
     ) => {
         /* There are two process types --> addHashtagProcess & removeHashtagProcess */
@@ -20,8 +19,7 @@ class HashtagService {
                 if (isHashtagExist) {
                     return await this.updateHashtag(hashtagData, processType === "addHashtagProcess" ? "addHashtag" : "removeHashtag");
                 } else if (processType === "addHashtagProcess") {
-                    hashtagData.entityType = entityType;
-                    return await this.insertNewHashtag(hashtagData);
+                    return await this.addHashtag(hashtagData);
                 } else {
                     throw new Error(`Hashtag ${hashtag} does not exist anymore!`);
                 }
@@ -30,43 +28,47 @@ class HashtagService {
             throw new Error(err);
         }
     };
+
     getHashtag = async (hashtag) => {
         try {
-            return await this.hashtagModelObject.findByName(hashtag);
+            return await this.modelObject.findByName(hashtag);
         } catch (err) {
             throw new Error(err);
         }
     };
+
     getHashtagList = async (searchTerm) => {
         try {
-            return await this.hashtagModelObject.getList(searchTerm);
+            return await this.modelObject.findBySearch(searchTerm);
         } catch (err) {
             throw new Error(err);
         }
     };
-    insertNewHashtag = async (hashtagData) => {
+
+    addHashtag = async (hashtagData) => {
         /* Here the entity type --> post, comment & reply  */
         try {
-            const {entityId, profileId, hashtag, entityType} = hashtagData;
+            const {entityId, profileId, hashtag} = hashtagData;
             const newHashtag = {
-                entityId: [entityId,],
-                profileId: [profileId,],
+                entityId: [entityId],
+                profileId: [profileId],
                 timestamp: `${new Date()}`,
                 hashtag: hashtag,
-                entityType: entityType,
             };
-            return await this.hashtagModelObject.add(newHashtag);
+            return await this.modelObject.add(newHashtag);
         } catch (err) {
             throw new Error(err);
         }
     };
+
     deleteHashtag = async (hashtagId) => {
         try {
-            await this.hashtagModelObject.delete(hashtagId);
+            await this.modelObject.delete(hashtagId);
         } catch (err) {
             throw new Error(err);
         }
     };
+
     updateHashtag = async (hashtagData = {}, option = "") => {
         /* options are two types --> removeHashtag & addHashtag */
         try {
@@ -74,13 +76,16 @@ class HashtagService {
             const getHashtagData = await this.getHashtag(hashtag);
             const {_id} = getHashtagData;
             const updateHashtagData = {
-                hashtagId: _id,
+                hashtagId: _id.toHexString(),
                 profileId: profileId,
                 entityId: entityId,
             };
 
-            if (option === "addHashtag") return await this.hashtagModelObject.updateHashtag(updateHashtagData);
-            else return await this.hashtagModelObject.remove(updateHashtagData);
+            if (option === "addHashtag") {
+                return await this.modelObject.update(updateHashtagData);
+            } else {
+                return await this.modelObject.remove(updateHashtagData);
+            }
         } catch (err) {
             throw new Error(err);
         }

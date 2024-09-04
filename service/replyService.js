@@ -1,33 +1,68 @@
+const extractSpecialWord = require("../util/extractSpecialWord");
+
 class ReplyService {
-    constructor(replyModelObject) {
-        this.replyModelObject = replyModelObject;
+    constructor(ISC, modelObject) {
+        this.modelObject = modelObject;
+        this.ISC = ISC;
     }
 
-    insertReply = async (replyData = {}) => {
+    createReplyService = async (replyData = {}) => {
         try {
             const {commentId, profileId, content} = replyData;
-            const newComments = {
+            const newReply = {
                 commentId: commentId,
                 profileId: profileId,
                 timestamp: new Date().toString(),
                 content: content,
                 likeIds: [],
-            }
-            return await this.replyModelObject.add(newComments);
+            };
+            const {hashList, mentionList} = extractSpecialWord(replyData.content);
+            const resultReply = await this.modelObject.add(newReply);
+            const resultMention = mentionList.length > 0
+                ? await this.ISC.resolveService('processMention')(mentionList, resultReply.insertedId.toHexString(), replyData.profileId, "addMentionProcess")
+                : null;
+            const resultHashtag = hashList.length > 0
+                ? await this.ISC.resolveService('processHashtag')(hashList, resultReply.insertedId.toHexString(), replyData.profileId, "addHashtagProcess")
+                : null;
+
+            this.ISC.removeServiceAddress('processMention');
+            this.ISC.removeServiceAddress('processHashtag');
+
+            return {
+                postResult: resultReply,
+                hashtagResult: resultHashtag,
+                mentionResult: resultMention
+            };
         } catch (err) {
             throw new Error(err);
         }
     };
-    getReplyByCommentId = async (commentId) => {
+    getByCommentId = async (commentId) => {
         try {
-            return await this.replyModelObject.findByCommentId(commentId);
+            const result = await this.modelObject.findByCommentId(commentId);
+            return result;
         } catch (err) {
             throw new Error(err);
         }
     };
-    getReplyByProfileId = async (profileId) => {
+    getReplyIdListByCommentId = async (commentId) => {
         try {
-            return await this.replyModelObject.findByProfileId(profileId);
+            const replyList = this.getByCommentId(commentId);
+            return replyList.map(reply => reply._id.toHexString());
+        } catch (err) {
+            throw new Error(err);
+        }
+    };
+    getByProfileId = async (profileId) => {
+        try {
+            return await this.modelObject.findByProfileId(profileId);
+        } catch (err) {
+            throw new Error(err);
+        }
+    };
+    getByReplyId = async (replyId) => {
+        try {
+            return await this.modelObject.findByReplyId(replyId);
         } catch (err) {
             throw new Error(err);
         }
@@ -41,15 +76,32 @@ class ReplyService {
                 profileId: profileId,
             };
             return options === "addLike"
-                ? this.replyModelObject.addLikeById(updateData)
-                : this.replyModelObject.removeLikeById(updateData);
+                ? this.modelObject.addLike(updateData)
+                : this.modelObject.removeLike(updateData);
         } catch (err) {
             throw new Error(err);
         }
     };
-    deleteReply = async (replyId) => {
+    deleteReplyService = async (replyId) => {
         try {
-            return await this.replyModelObject.deleteById(replyId);
+            const getReplyData = await this.getByReplyId(replyId, "getByReplyId");
+            const {hashList, mentionList} = extractSpecialWord(getReplyData.content);
+            const resultMention = mentionList.length !== 0 ?
+                await this.ISC.resolveService('processMention')(mentionList, replyId, getReplyData.profileId, "removeMentionProcess")
+                : null;
+            const resultHashtag = hashList.length !== 0 ?
+                await this.ISC.resolveService('processHashtag')(hashList, replyId, getReplyData.profileId, "removeHashtagProcess")
+                : null;
+            const resultReply = await this.serviceObject.delete(replyId);
+
+            this.ISC.removeServiceAddress('processMention');
+            this.ISC.removeServiceAddress('processHashtag');
+
+            return {
+                postResult: resultReply,
+                hashtagResult: resultHashtag,
+                mentionResult: resultMention
+            };
         } catch (err) {
             throw new Error(err);
         }

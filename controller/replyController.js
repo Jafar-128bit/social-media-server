@@ -1,6 +1,8 @@
+const extractSpecialWord = require("../util/extractSpecialWord");
+
 class ReplyController {
-    constructor(replyServiceObject) {
-        this.replyServiceObject = replyServiceObject;
+    constructor(serviceObject) {
+        this.serviceObject = serviceObject;
     }
 
     #createResponse = (statusCode, message, code, result = null) => {
@@ -16,7 +18,7 @@ class ReplyController {
 
     addReply = async (replyData = {}) => {
         try {
-            const result = await this.replyServiceObject.insertReply(replyData);
+            const result = await this.serviceObject.createReplyService(replyData);
             return this.#createResponse(200, "Comment Inserted Successfully", "OK", result);
         } catch (err) {
             return this.#createResponse(
@@ -27,11 +29,22 @@ class ReplyController {
         }
     };
     getReply = async (entityId, option = "") => {
-        /* Options are -- getByCommentId & getByProfileId */
+        /* Options are -- getByReplyId, getByCommentId & getByProfileId */
         try {
-            const result = option === "getByCommentId"
-                ? await this.replyServiceObject.getReplyByCommentId(entityId)
-                : await this.replyServiceObject.getReplyByProfileId(entityId);
+            let result;
+            switch (option) {
+                case "getByReplyId":
+                    result = await this.serviceObject.getByReplyId(entityId);
+                    break;
+                case "getByCommentId":
+                    result = await this.serviceObject.getByCommentId(entityId);
+                    break;
+                case "getByProfileId":
+                    result = await this.serviceObject.getByProfileId(entityId);
+                    break;
+                default:
+                    break;
+            }
             return this.#createResponse(200, "Found Replies List", "OK", result);
         } catch (err) {
             return this.#createResponse(
@@ -50,8 +63,8 @@ class ReplyController {
         };
         try {
             const result = option === "addLike"
-                ? await this.replyServiceObject.updateReply(updateData, "addLike")
-                : await this.replyServiceObject.updateReply(updateData, "removeLike");
+                ? await this.serviceObject.updateReply(updateData, "addLike")
+                : await this.serviceObject.updateReply(updateData, "removeLike");
             return this.#createResponse(200, "Reply Update!", "OK", result);
         } catch (err) {
             return this.#createResponse(
@@ -63,7 +76,7 @@ class ReplyController {
     };
     deleteReply = async (replyId) => {
         try {
-            const result = await this.replyServiceObject.deleteComment(replyId);
+            const result = await this.serviceObject.deleteReplyService(replyId);
             return this.#createResponse(200, "Reply Deleted", "OK", result);
         } catch (err) {
             return this.#createResponse(

@@ -11,30 +11,31 @@ class HashtagModel {
         return this.collection;
     }
 
-    getList = async (searchTerm) => await this.collection.find({
+    add = async (hashtagData) => await this.getCollection().insertOne(hashtagData,);
+    findBySearch = async (searchTerm) => await this.getCollection().find({
         $or: [
-            {hashtag: {$regex: searchTerm, $options: 'i'}},
-        ]
-    }).toArray();
-    add = async (hashtagData) => await this.getCollection().insertOne(hashtagData);
-    findByName = async (hashtag) => await this.getCollection().findOne({hashtag: hashtag});
+            {hashtag: {$regex: searchTerm, $options: 'i'}},]
+    },).toArray();
+    findByName = async (hashtag) => await this.getCollection().findOne({hashtag: hashtag},);
     update = async (hashtagData = {}) => {
         const {hashtagId, profileId, entityId} = hashtagData;
         return await this.getCollection().updateOne(
             {_id: new ObjectId(hashtagId)},
-            {$push: {profileId: profileId}},
-            {$push: {entityId: entityId}}
+            {
+                $push: {profileId: profileId, entityId: entityId}
+            },
         );
     };
     remove = async (hashtagData = {}) => {
         const {hashtagId, profileId, entityId} = hashtagData;
         return await this.getCollection().updateOne(
             {_id: new ObjectId(hashtagId)},
-            {$pull: {profileId: profileId}},
-            {$pull: {entityId: entityId}}
+            {
+                $pull: {profileId: profileId, entityId: entityId}
+            },
         );
     };
-    delete = async (hashtagId) => await this.getCollection().deleteOne({_id: new ObjectId(hashtagId)});
+    delete = async (hashtagId) => await this.getCollection().deleteOne({_id: new ObjectId(hashtagId)},);
 }
 
 module.exports = HashtagModel;

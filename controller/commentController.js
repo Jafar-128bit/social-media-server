@@ -1,6 +1,8 @@
+const extractSpecialWord = require('../util/extractSpecialWord');
+
 class CommentController {
-    constructor(commentServiceObject) {
-        this.commentServiceObject = commentServiceObject;
+    constructor(serviceObject) {
+        this.serviceObject = serviceObject;
     }
 
     #createResponse = (statusCode, message, code, result = null) => {
@@ -16,7 +18,7 @@ class CommentController {
 
     addComment = async (commentData = {}) => {
         try {
-            const result = await this.commentServiceObject.insertComment(commentData);
+            const result = await this.serviceObject.createCommentService(commentData);
             return this.#createResponse(200, "Comment Inserted Successfully", "OK", result);
         } catch (err) {
             return this.#createResponse(
@@ -27,11 +29,22 @@ class CommentController {
         }
     };
     getComment = async (entityId, option = "") => {
-        /* Options are -- getByPostId & getByProfileId */
+        /* Options are -- getByCommentId, getByPostId & getByProfileId */
         try {
-            const result = option === "getByPostId"
-                ? await this.commentServiceObject.getCommentByPostId(entityId)
-                : await this.commentServiceObject.getCommentByProfileId(entityId);
+            let result;
+            switch (option) {
+                case "getByCommentId":
+                    result = await this.serviceObject.getCommentById(entityId);
+                    break;
+                case "getByPostId":
+                    result = await this.serviceObject.getByPostId(entityId);
+                    break;
+                case "getByReplyId":
+                    result = await this.serviceObject.getByProfileId(entityId);
+                    break;
+                default:
+                    break;
+            }
             return this.#createResponse(200, "Found Comment List", "OK", result);
         } catch (err) {
             return this.#createResponse(
@@ -50,8 +63,8 @@ class CommentController {
         };
         try {
             const result = option === "addLike"
-                ? await this.commentServiceObject.updateComment(updateData, "addLike")
-                : await this.commentServiceObject.updateComment(updateData, "removeLike");
+                ? await this.serviceObject.updateCommentLike(updateData, "addLike")
+                : await this.serviceObject.updateCommentLike(updateData, "removeLike");
             return this.#createResponse(200, "Comment Update!", "OK", result);
         } catch (err) {
             return this.#createResponse(
@@ -63,7 +76,7 @@ class CommentController {
     };
     deleteComment = async (commentId) => {
         try {
-            const result = await this.commentServiceObject.deleteComment(commentId);
+            const result = await this.serviceObject.deleteCommentService(commentId);
             return this.#createResponse(200, "Comment Deleted", "OK", result);
         } catch (err) {
             return this.#createResponse(

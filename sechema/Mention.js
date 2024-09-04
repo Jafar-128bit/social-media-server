@@ -3,7 +3,7 @@ exports.createMentionCollection = async (db) => {
         const mentionSchema = {
             $jsonSchema: {
                 bsonType: "object",
-                required: ["entityId", "profileId", "timestamp", "mentionedProfileId", "entityType"],
+                required: ["entityId", "profileId", "timestamp", "mentionedProfileId",],
                 properties: {
                     entityId: {
                         bsonType: "array",
@@ -17,7 +17,6 @@ exports.createMentionCollection = async (db) => {
                     },
                     timestamp: {bsonType: "string", description: "must be a string (ISO date) and is required"},
                     mentionedProfileId: {bsonType: "string", description: "must be a string and is required"},
-                    entityType: {bsonType: "string", description: "must be a string and is required"},
                 }
             }
         };

@@ -11,15 +11,15 @@ class ProfileModel {
         return this.collection;
     }
 
-    findProfileById = async (profileId) => await this.getCollection().findOne({_id: new ObjectId(profileId)});
+    findById = async (profileId) => await this.getCollection().findOne({_id: new ObjectId(profileId)});
     findByUsername = async (username) => await this.getCollection().findOne({username: username});
-    getProfileList = async (searchTerm) => await this.getCollection().find({
+    findBySearch = async (searchTerm) => await this.getCollection().find({
         $or: [
             {username: {$regex: searchTerm, $options: 'i'}},
-            {profileName: {$regex: searchTerm, $options: 'i'}}
+            {profileName: {$regex: searchTerm, $options: 'i'}},
         ]
     }).toArray();
-    updateProfileById = async ({profileId, option, data}) => {
+    update = async ({profileId, option, data}) => {
         const db = getDb();
         switch (option) {
             case "editPicture":

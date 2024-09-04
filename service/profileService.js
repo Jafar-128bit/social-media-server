@@ -1,32 +1,31 @@
 const deleteFile = require('../util/deleteFile');
 
 class ProfileService {
-    constructor(modelObject) {
+    constructor(ISC, modelObject) {
         this.modelObject = modelObject;
+        this.ISC = ISC;
     }
 
     getProfileService = async (getType = "", getData) => {
-        /* Get-Type are two types - getById and getList */
+        /* Get-Type are two types - getById, byUsername and getList */
         if (getType === "getById") {
-            const profile = await this.modelObject.findProfileById(getData);
-            if (profile) return {profile};
-            else throw new Error("Profile not found");
+            return await this.modelObject.findById(getData);
+        } else if (getType === "byUsername") {
+            return await this.modelObject.findByUsername(getData);
         } else {
-            const profileList = await this.modelObject.getProfileList(getData);
-            if (!profileList) throw new Error('Internal Server Error');
-            return {profileList};
+            return await this.modelObject.findBySearch(getData);
         }
     };
     updateProfilePictureService = async ({profileId, filePath}, updateOption = "") => {
         /* Update Option are two types - addNewPicture and deletePicture */
-        const profile = await this.modelObject.findProfileById(profileId);
+        const profile = await this.modelObject.findById(profileId);
         if (!profile) throw new Error("Profile not found");
 
         if (updateOption === "addNewPicture") {
             const isFileDeleted = deleteFile(profile);
             const imageFilePath = filePath.replace('public/', '');
 
-            const updatedProfile = await this.modelObject.updateProfileById({
+            const updatedProfile = await this.modelObject.update({
                     profileId,
                     option: "editPicture",
                     imageFilePath
@@ -55,7 +54,7 @@ class ProfileService {
             const isFileDeleted = deleteFile(profile);
             if (!isFileDeleted) throw new Error("Error removing profile picture");
 
-            const updatedProfile = await this.modelObject.updateProfileById({
+            const updatedProfile = await this.modelObject.update({
                     profileId,
                     option: "deletePicture",
                 }
@@ -74,7 +73,7 @@ class ProfileService {
     updatedProfileInfoService = async ({profileId, updatedData}, updateOption = "") => {
         /* Update Option are two types - updateDescription and updateLinks */
         console.log(profileId, updatedData);
-        const profile = await this.modelObject.findProfileById(profileId);
+        const profile = await this.modelObject.findById(profileId);
         if (!profile) throw new Error("Profile not found");
 
         const returnFunction = (updatedProfile, {updateValue, updatedData}) => {
@@ -97,7 +96,7 @@ class ProfileService {
         let updatedProfile;
 
         if (updateOption === "updateDescription") {
-            updatedProfile = await this.modelObject.updateProfileById({
+            updatedProfile = await this.modelObject.update({
                 profileId,
                 option: "editDescription",
                 data: updatedData
@@ -105,7 +104,7 @@ class ProfileService {
             if (!updatedProfile) throw new Error('Internal Server Error');
             return returnFunction(updatedProfile, {updateValue: "profileDescription", updatedData});
         } else {
-            updatedProfile = await this.modelObject.updateProfileById({
+            updatedProfile = await this.modelObject.update({
                 profileId,
                 option: "editLinks",
                 data: updatedData
@@ -117,12 +116,12 @@ class ProfileService {
     updateFollowingService = async ({profileId, followingProfileId}, updateOption = "") => {
         /* Update Option are two types - addFollower and removeFollower */
 
-        const profile = await this.modelObject.findProfileById(profileId);
-        const followingProfile = await this.modelObject.findProfileById(followingProfileId);
+        const profile = await this.modelObject.findById(profileId);
+        const followingProfile = await this.modelObject.findById(followingProfileId);
 
         if (!profile || !followingProfile) throw new Error("Profile not found");
 
-        const updateResults = await this.modelObject.updateProfileById({
+        const updateResults = await this.modelObject.update({
             profileId,
             option: updateOption,
             data: followingProfileId
@@ -158,10 +157,10 @@ class ProfileService {
         }
     };
     changePrivateStatusService = async ({profileId, privateStatus}) => {
-        const profile = await this.modelObject.findProfileById(profileId);
+        const profile = await this.modelObject.findById(profileId);
         if (!profile) throw new Error("Profile not found");
 
-        const updatedProfile = await this.modelObject.updateProfileById({
+        const updatedProfile = await this.modelObject.update({
                 profileId,
                 option: "changePrivateStatus",
                 data: privateStatus
@@ -184,10 +183,10 @@ class ProfileService {
         } else throw new Error("Profile not found");
     };
     updateEmailService = async ({profileId, email}) => {
-        const profile = await this.modelObject.findProfileById(profileId);
+        const profile = await this.modelObject.findById(profileId);
         if (!profile) throw new Error("Profile not found");
 
-        const updatedProfile = await this.modelObject.updateProfileById({
+        const updatedProfile = await this.modelObject.update({
                 profileId,
                 option: "editEmail",
                 data: email

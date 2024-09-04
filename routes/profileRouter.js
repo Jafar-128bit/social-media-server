@@ -31,7 +31,7 @@ module.exports = (controllerObject = {}, validator, middlewareObject = {}) => {
         } else return res.status(404).json({message: "Profile Id is Empty!", code: "BAD"});
     });
 
-    router.patch("/editProfilePicture", middlewareObject.uploadFileMiddleware.single('file'), async (req, res) => {
+    router.patch("/editProfilePicture", middlewareObject.fileProcess.single('file'), async (req, res) => {
         const isValid = validator(req.body, "idValidator");
         if (isValid) {
             const {profileId} = req.body;

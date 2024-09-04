@@ -11,25 +11,29 @@ class MentionModel {
         return this.collection;
     }
 
-    add = async (mentionData) => await this.getCollection().insertOne(mentionData);
-    findById = async (mentionProfileId) => await this.getCollection().findOne({mentionedProfileId: mentionProfileId});
-    update = async (mentionData = {}) => {
+    add = async (mentionData, option = {}) => await this.getCollection().insertOne(mentionData, option);
+    findById = async (mentionProfileId, option = {}) => await this.getCollection().findOne({mentionedProfileId: mentionProfileId}, option);
+    update = async (mentionData = {}, option = {}) => {
         const {mentionId, profileId, entityId} = mentionData;
         return await this.getCollection().updateOne(
             {_id: new ObjectId(mentionId)},
-            {$push: {profileId: profileId}},
-            {$push: {entityId: entityId}}
-        )
+            {
+                $push: {profileId: profileId, entityId: entityId}
+            },
+            option
+        );
     };
-    remove = async (mentionData = {}) => {
+    remove = async (mentionData = {}, option = {}) => {
         const {mentionId, profileId, entityId} = mentionData;
         return await this.getCollection().updateOne(
             {_id: new ObjectId(mentionId)},
-            {$pull: {profileId: profileId}},
-            {$pull: {entityId: entityId}}
-        )
+            {
+                $pull: {profileId: profileId, entityId: entityId}
+            },
+            option
+        );
     };
-    delete = async (mentionId) => await this.getCollection().deleteOne({_id: new ObjectId(mentionId)});
+    delete = async (mentionId, option = {}) => await this.getCollection().deleteOne({_id: new ObjectId(mentionId)}, option);
 }
 
 module.exports = MentionModel;
